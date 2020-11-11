@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <script src="./view-scripts/include-html.js"></script>
-    <div w3-include-html="./components/default-header.html"></div>
-
+    <script src="./view-scripts/home.js"></script>
+    
     <link href="./styles/index.css" rel="stylesheet">
     <link href="./styles/app.css" rel="stylesheet">
 
@@ -17,13 +17,18 @@
         <div class="sidebar-title">
             Game Launcher
         </div>
-        <div class="sidebar-item">
+        <div class="sidebar-item active" value="game-page">
             Games
         </div>
+        <div class="sidebar-item" value="other-page">
+            TBD
+        </div>
     </div>
-    <script>
-        includeHTML();
-    </script>
+    <div class="main">
+        
+        <div id="games-page" w3-include-html="./pages/games.html"></div>
+        <div id="other-page" w3-include-html=""></div>
+    </div>
 </body>
 </html>
 
