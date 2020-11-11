@@ -10,5 +10,8 @@
 body {
     background-color: grey;
     margin: unset;
+    display: grid;
+    grid-template-columns: 240px auto;
+    height:100vh;
 }
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');

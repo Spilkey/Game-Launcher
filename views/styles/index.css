@@ -11,6 +11,7 @@
 
 }
 .sidebar-item{
+    grid-column: 1;
     height: 30px;
     padding: 10px;
     transition: box-shadow 100ms, background-color 100ms;
@@ -31,4 +32,36 @@
     font-size: 1.2rem;
     padding: 10px;
     text-align: center;
+}
+.sidebar-item.active {
+    box-shadow: 1px 1px 6px dimgrey;
+    transition: box-shadow 100ms, background-color 100ms;
+    cursor: none;
+    background-color: rgb(128, 114, 190);
+    pointer-events: none;
+}
+
+.main{
+    grid-column: 2;
+    padding: 20px
+}
+
+#add-game{
+    border:none;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: transparent;
+    transition: box-shadow 100ms, background-color 100ms;
+}
+
+#add-game:hover{
+    box-shadow: 1px 2px 7px #4e4e4e;
+    cursor: pointer;
+    transition: box-shadow 100ms, background-color 100ms;
+    font-weight: 500;
+}
+
+#add-game:active, #add-game:focus{
+    outline: none;
+    box-shadow:inset 1px 2px 7px #4e4e4e;;
 }
