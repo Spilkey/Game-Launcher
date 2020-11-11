@@ -1,0 +1,14 @@
+:root{
+    font-size: 16px;
+    font-family: 'Roboto', BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',-apple-system,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: grey;
+    margin: unset;
+}
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');

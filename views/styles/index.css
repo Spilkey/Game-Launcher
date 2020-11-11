@@ -1,0 +1,34 @@
+.sidebar {
+    height:100vh;
+    background-color: darkgrey;
+    width: 240px;
+    padding: 20px 0px;
+    box-shadow: darkslategray 1px 0px 7px;
+    position: absolute;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+
+}
+.sidebar-item{
+    height: 30px;
+    padding: 10px;
+    transition: box-shadow 100ms, background-color 100ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-item:hover{
+    box-shadow: 1px 1px 6px dimgrey;
+    transition: box-shadow 100ms, background-color 100ms;
+    cursor: pointer;
+    background-color: grey;
+}
+
+.sidebar-title{
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 10px;
+    text-align: center;
+}
