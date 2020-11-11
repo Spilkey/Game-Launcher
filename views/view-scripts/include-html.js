@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron')
+
 
 function includeHTML() {
     var z, i, elmnt, file, xhttp;
@@ -20,9 +20,8 @@ function includeSpecificHtml(element){
         if (this.readyState == 4) {
             if (this.status == 200) {element.innerHTML = this.responseText;}
             if (this.status == 404) {element.innerHTML = "Page not found.";}
-            /*remove the attribute, and call this function once more:*/
-            element.removeAttribute("w3-include-html");
-            includeHTML();
+            let id = element.getAttribute('id');
+            document.dispatchEvent(events[id]);
         }
         }      
         xhttp.open("GET", file, true);
