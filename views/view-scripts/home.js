@@ -28,7 +28,10 @@ docReady(() => {
 });
 
 
-document.addEventListener('games-page', function (e) {  
+document.addEventListener('games-page', function (e) { 
+    ipcRenderer.invoke('games-page').then((data) => {
+        
+    });
     let addGame = document.getElementById('add-game');
     let addPath = document.getElementById('add-path');
        
