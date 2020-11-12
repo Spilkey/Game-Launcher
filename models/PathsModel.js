@@ -1,19 +1,32 @@
 const { db } = require("./DB")
+const util = require('util');
 
 class PathsModel {
-    constructor(){
+    constructor() {
         this.db = db.instance.db();
     }
 
-    getPaths(){
-
+    getPaths() {
+        return new Promise((resolve, reject) => {
+            let sql = `
+            SELECT * 
+            FROM paths 
+            ORDER BY path`;
+            this.db.all(sql, (err, row) => {
+                if (err) {
+                    reject(err); // optional: you might choose to swallow errors.
+                } else {
+                    resolve(row); // accumulate the data
+                }
+            });
+        });
     }
-    
-    insertPath(path){
+
+    insertPath(path) {
         let sql = `
         INSERT INTO paths(path) 
         VALUES(?)`;
-        
+
         var lastId = this.db.run(sql, [path], function (err) {
             if (err) {
                 return console.log(err.message);
@@ -24,7 +37,7 @@ class PathsModel {
         });
     }
 
-    deletePath(id){
+    deletePath(id) {
         let sql = `
         DELETE FROM paths
         WHERE id = (?)`;
