@@ -64,5 +64,13 @@ ipcMain.handle('add-path', (event, args) => {
 	return path;
 });
 
+ipcMain.handle('games-page', (event, args) => {
+	var paths = pathsModel.getPaths();
+	paths.then((data) => {
+		console.log(data);
+	});
+	return paths;
+});
+
 
 
