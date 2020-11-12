@@ -1,7 +1,11 @@
 const { app, BrowserWindow } = require('electron')
-const { ipcMain } = require('electron')
+const { ipcMain } = require('electron');
 const { shell } = require('electron');
-const { dialog } = require('electron')
+const { dialog } = require('electron');
+const fs = require('fs');
+
+const {settingsPath} = require('./middleware/paths')
+if (!fs.existsSync(settingsPath)) fs.mkdir(settingsPath, () => {});
 
 
 function createWindow() {
@@ -37,4 +41,6 @@ ipcMain.handle('add-game', (event, args) => {
 	]});
 	return path;
 });
+
+
 
