@@ -29,9 +29,17 @@ docReady(() => {
 
 
 document.addEventListener('games-page', function (e) {  
-    let addGame = document.getElementById('add-game');   
+    let addGame = document.getElementById('add-game');
+    let addPath = document.getElementById('add-path');
+       
     addGame.addEventListener('click', event => {    
         ipcRenderer.invoke('add-game').then((data) => {
+            console.log(data);
+        });
+    });
+    
+    addPath.addEventListener('click', event => {    
+        ipcRenderer.invoke('add-path').then((data) => {
             console.log(data);
         });
     }); 

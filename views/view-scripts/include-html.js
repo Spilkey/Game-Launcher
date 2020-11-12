@@ -17,12 +17,12 @@ function includeSpecificHtml(element){
         /*make an HTTP request using the attribute value as the file name:*/
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
-        if (this.readyState == 4) {
-            if (this.status == 200) {element.innerHTML = this.responseText;}
-            if (this.status == 404) {element.innerHTML = "Page not found.";}
-            let id = element.getAttribute('id');
-            document.dispatchEvent(events[id]);
-        }
+            if (this.readyState == 4) {
+                if (this.status == 200) {element.innerHTML = this.responseText;}
+                if (this.status == 404) {element.innerHTML = "Page not found.";}
+                let id = element.getAttribute('id');
+                document.dispatchEvent(events[id]);
+            }
         }      
         xhttp.open("GET", file, true);
         xhttp.send();
