@@ -1,11 +1,28 @@
-const { app, BrowserWindow } = require('electron')
-const { ipcMain } = require('electron');
-const { shell } = require('electron');
-const { dialog } = require('electron');
-const fs = require('fs');
-const { pathsModel } = require('./models/PathsModel')
+require('babel-register')({
+	presets: ['env']
+  });
+  
+import { app, BrowserWindow } from 'electron';
+import { ipcMain } from 'electron';
+import { shell } from 'electron';
+import { dialog } from 'electron';
 
-const { settingsPath } = require('./middleware/paths')
+import fs from 'fs';
+import ini from 'ini';
+
+import { pathsModel } from './models/PathsModel';
+import  { gamesModel } from './models/GamesModel';
+
+import Game from './models/Game';
+
+
+import { settingsPath, desktopPath } from './middleware/paths';
+
+import { resolve } from 'path';
+import { rejects } from 'assert';
+
+import { getFileProperties, WmicDataObject } from 'get-file-properties';
+
 if (!fs.existsSync(settingsPath)) fs.mkdir(settingsPath, () => { });
 
 
@@ -47,29 +64,38 @@ ipcMain.handle('add-game', (event, args) => {
 	return path;
 });
 
-ipcMain.handle('add-path', (event, args) => {
-	var path = dialog.showOpenDialog({
-		properties: ['openDirectory']
-	})
-	path.then((path) => {
-		if(path.filePaths.length > 0){
-			try {
-				pathsModel.insertPath(path.filePaths[0]);
-			} catch (e) {
-				console.error(e);
-			}
+ipcMain.handle('games-page', (event, args) => {
+
+	// Loop through all the files in the temp directory
+	fs.promises.readdir(desktopPath).then((files, err) => {
+		if (err) {
+			console.error("Could not list the directory.", err);
+		} else {
+			files.forEach(function (file, index) {
+				if (file.endsWith('.url')) {
+					const fileMetaData = getFileProperties(desktopPath + "\\" + file);
+					fileMetaData.then((metaData) => {
+						// console.log(metaData);
+						// console.log(metaData.EightDotThreeFileName);
+						let fileIni = ini.parse(fs.readFileSync(metaData.EightDotThreeFileName, 'utf-8'));
+						let url = fileIni['InternetShortcut']['URL'];
+						let name = metaData.FileName;
+						let icon = fileIni['InternetShortcut']['IconFile'];
+
+						console.log(fileIni);
+						console.log(url);
+						console.log(name);
+						console.log(icon);
+
+						let game = new Game(name, url, icon);
+
+						// gamesModel.insertGame(game);
+					});
+					// pathsModel.insertPath();
+				}
+			});
 		}
 	});
-
-	return path;
-});
-
-ipcMain.handle('games-page', (event, args) => {
-	var paths = pathsModel.getPaths();
-	paths.then((data) => {
-		console.log(data);
-	});
-	return paths;
 });
 
 

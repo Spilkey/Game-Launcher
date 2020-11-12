@@ -1,7 +1,7 @@
-const { app } = require('electron')
+import { app } from 'electron';
 
 const documentPath = app.getPath('documents');
+const desktopPath = app.getPath('desktop');
 const settingsPath = `${documentPath}\\gamelauncher`;
 
-exports.documentPath = documentPath;
-exports.settingsPath = settingsPath;
+export { documentPath, settingsPath, desktopPath };

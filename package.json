@@ -2,7 +2,7 @@
   "name": "game-launcher",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron ."
@@ -11,9 +11,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "electron": "^10.1.5"
   },
   "dependencies": {
+    "get-file-properties": "^1.0.1",
+    "shortcut-url": "^3.0.0",
     "sqlite3": "^5.0.0"
   }
+
 }

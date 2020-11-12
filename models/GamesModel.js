@@ -1,7 +1,9 @@
-const db = require('./DB');
+import { DB as db } from './DB';
 
 class GamesModel {
-    db = db;
+    constructor() {
+        this.db = db.instance.db();
+    }
 
     getAllGames() {
         let sql = `
@@ -11,10 +13,10 @@ class GamesModel {
 
         db.all(sql, [], (err, rows) => {
             if (err) {
-              throw err;
+                throw err;
             }
             return rows;
-          });
+        });
     }
 
     getGame(id) {
@@ -28,14 +30,14 @@ class GamesModel {
             // process the row here
             if (err) {
                 throw err;
-              }
+            }
             return rows;
         });
     }
 
     insertGame(game) {
         // insert one row into the langs table
-        let values = game.toListString(); 
+        let values = game.toListString();
         let sql = `
         INSERT INTO games(name, path, icon) 
         VALUES(?)`;
@@ -51,7 +53,7 @@ class GamesModel {
     }
 
     updateGame(game) {
-        
+
         let values = game.toJson();
         let sql = `
         UPDATE games
@@ -61,7 +63,7 @@ class GamesModel {
         WHERE
             id = (?)
         LIMIT 1`;
-        
+
         db.run(sql, [values.name, values.path, values.icon, values.id], function (err) {
             if (err) {
                 return console.log(err.message);
@@ -72,7 +74,7 @@ class GamesModel {
         });
     }
 
-    deleteGame(id){
+    deleteGame(id) {
         let sql = `
         DELETE FROM games
         WHERE id = (?)`;
@@ -88,4 +90,4 @@ class GamesModel {
     }
 }
 
-exports.GamesModel = GamesModel;
+export default GamesModel; 

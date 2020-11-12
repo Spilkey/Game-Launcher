@@ -1,6 +1,6 @@
-const sqlite3 = require('sqlite3').verbose();
+import sqlite3 from 'sqlite3';
 
-const {settingsPath} = require('../middleware/paths')
+import {settingsPath} from '../middleware/paths';
 
 
 const DB = {
@@ -19,7 +19,7 @@ const DB = {
                     let tablesArray = tables.map(element => element.name);
                     console.log(tablesArray);
                     if( tablesArray.indexOf('games') == -1){
-                        db.run('CREATE TABLE games(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, path TEXT, icon TEXT)');
+                        db.run('CREATE TABLE games(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, path TEXT UNIQUE, icon TEXT)');
                     }
                     if(tablesArray.indexOf('paths') == -1){
                         db.run('CREATE TABLE paths(id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT)');
@@ -44,4 +44,4 @@ const DB = {
     }
   };
 
-exports.db = DB;
+export default DB;

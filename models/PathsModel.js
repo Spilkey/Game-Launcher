@@ -1,5 +1,4 @@
-const { db } = require("./DB")
-const util = require('util');
+import {DB as db} from './DB';
 
 class PathsModel {
     constructor() {
@@ -52,5 +51,4 @@ class PathsModel {
         });
     }
 }
-
-exports.pathsModel = new PathsModel();
+export default PathsModel;

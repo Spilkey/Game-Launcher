@@ -1,26 +1,21 @@
 
 class Game {
-    _id;
-    _name;
-    _path;
-    _icon;
-
-    constructor(name, path, icon, id=None){
+    constructor(name, path, icon, id = null) {
         this.id = id;
         this._name = name;
         this._path = path;
         this._icon = icon;
     }
 
-    toList(){
+    toList() {
         return [_id, _name, _path, _icon];
     }
 
-    toListString(){
+    toListString() {
         return `${this._name}, ${this._path}, ${this._icon}`
     }
 
-    toJson(){
+    toJson() {
         return {
             'id': this._id,
             'name': this._name,
@@ -29,3 +24,5 @@ class Game {
         }
     }
 }
+
+export default Game;
