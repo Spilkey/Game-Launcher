@@ -46,22 +46,29 @@
     padding: 20px
 }
 
-#add-game{
+.horizontal-buttons button{
     border:none;
     padding: 10px;
     border-radius: 10px;
     background-color: transparent;
     transition: box-shadow 100ms, background-color 100ms;
+    margin: 10px;
+    box-shadow: 1px 2px 7px #727272;
+    background-color: slategray;
 }
 
-#add-game:hover{
+.horizontal-buttons button:hover{
     box-shadow: 1px 2px 7px #4e4e4e;
     cursor: pointer;
     transition: box-shadow 100ms, background-color 100ms;
     font-weight: 500;
 }
 
-#add-game:active, #add-game:focus{
+.horizontal-buttons button:active,.horizontal-buttons button:focus{
     outline: none;
     box-shadow:inset 1px 2px 7px #4e4e4e;;
+}
+
+.horizontal-buttons{
+    display: flex;
 }

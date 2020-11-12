@@ -3,9 +3,10 @@ const { ipcMain } = require('electron');
 const { shell } = require('electron');
 const { dialog } = require('electron');
 const fs = require('fs');
+const { pathsModel } = require('./models/PathsModel')
 
-const {settingsPath} = require('./middleware/paths')
-if (!fs.existsSync(settingsPath)) fs.mkdir(settingsPath, () => {});
+const { settingsPath } = require('./middleware/paths')
+if (!fs.existsSync(settingsPath)) fs.mkdir(settingsPath, () => { });
 
 
 function createWindow() {
@@ -36,9 +37,30 @@ app.on('activate', () => {
 });
 
 ipcMain.handle('add-game', (event, args) => {
-	var path = dialog.showOpenDialog({properties: ['openFile'], filters: [
-		{name: 'Custom File Type', extensions: ['exe']},
-	]});
+	var path = dialog.showOpenDialog({
+		properties: ['openFile'],
+		filters: [
+			{ name: 'Custom File Type', extensions: ['exe'] },
+		]
+	});
+
+	return path;
+});
+
+ipcMain.handle('add-path', (event, args) => {
+	var path = dialog.showOpenDialog({
+		properties: ['openDirectory']
+	})
+	path.then((path) => {
+		if(path.filePaths.length > 0){
+			try {
+				pathsModel.insertPath(path.filePaths[0]);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+	});
+
 	return path;
 });
 
