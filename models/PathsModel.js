@@ -1,8 +1,8 @@
-import {DB as db} from './DB';
+import DB from './DB';
 
 class PathsModel {
     constructor() {
-        this.db = db.instance.db();
+        this.db = DB.instance.db();
     }
 
     getPaths() {
