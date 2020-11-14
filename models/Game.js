@@ -8,7 +8,7 @@ class Game {
     }
 
     toList() {
-        return [_id, _name, _path, _icon];
+        return [this._name, this._path, this._icon];
     }
 
     toListString() {
