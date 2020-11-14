@@ -5,10 +5,14 @@
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    --primary-color: #d0d0d0;
+    --border-radius: 10px;
+    --normal-padding: 10px;
 }
 
 body {
-    background-color: grey;
+    background-color: var(--primary-color);
     margin: unset;
     display: grid;
     grid-template-columns: 240px auto;

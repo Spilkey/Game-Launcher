@@ -1,5 +1,5 @@
 .sidebar {
-    height:100vh;
+    height:calc(100vh - 40px);
     background-color: darkgrey;
     width: 240px;
     padding: 20px 0px;
@@ -54,7 +54,8 @@
     transition: box-shadow 100ms, background-color 100ms;
     margin: 10px;
     box-shadow: 1px 2px 7px #727272;
-    background-color: slategray;
+    background-color: dodgerblue;
+    color: white
 }
 
 .horizontal-buttons button:hover{
@@ -71,4 +72,185 @@
 
 .horizontal-buttons{
     display: flex;
+}
+
+#myGames {
+    height: 100%;
+}
+
+.top-my-games{
+    height: 200px;
+}
+
+.bottom-my-games {
+    height: calc(100vh - 200px - 103px);
+    overflow: auto;
+    /* border: 1px solid black; */
+    box-shadow: 1px 2px 10px #4e4e4e;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.bottom-my-games::-webkit-scrollbar {
+    width: 15px;
+}
+  
+/* Track */
+.bottom-my-games::-webkit-scrollbar-track {
+    background: var(--primary-color);
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px grey; 
+    border: 2px solid transparent;
+}
+
+/* Handle */
+.bottom-my-games::-webkit-scrollbar-thumb {
+    background: rgb(60, 59, 61); 
+    border-radius: 10px;
+    background-clip: content-box;
+    border: 2px solid transparent;
+}
+
+/* Handle on hover */
+.bottom-my-games::-webkit-scrollbar-thumb:hover {
+    background: rgb(32, 29, 44); 
+}
+
+.game-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 100px;
+}
+
+.game-row .game-icon{
+    grid-column: 1;
+    width: 60px;
+    height: 60px;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.game-row .game-icon img{
+    width: 80%;
+    height: 80%;
+    transition: box-shadow 200ms, width 200ms, height 200ms;
+}
+
+.game-row .game-icon img:hover{
+    width:100%;
+    height: 100%;
+    cursor: pointer;
+    box-shadow: 1px 2px 7px grey;
+    transition: box-shadow 200ms, width 200ms, height 200ms;
+}
+
+.game-row .game-name{
+    grid-column: 2;
+}
+
+.game-row .play-button{
+    grid-column: 3;
+    border-radius: 10px;
+    border: unset;
+    margin: 5px;
+    background: linear-gradient(217deg, #a5cef3, rgb(148, 148, 148) 70.71%);
+    box-shadow: 1px 2px 7px #ccc;
+    
+}
+.game-row .play-button a {
+    text-decoration: none;
+}
+
+.game-row .play-button:hover{
+    cursor: pointer;
+    box-shadow: 1px 2px 7px grey;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 800px; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.login-row{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding: 5px;
+    margin: 5px;
+}
+
+.login-row label {
+    grid-column: 1;
+}
+
+.login-row input {
+    grid-column: 2;
+    height: 25px;
+    font-size: 1.1rem;
+    border-radius: var(--border-radius);
+    border: 1px rgb(155, 155, 155);
+    box-shadow: 1px 1px 10px #fefefe inset;
+    padding:5px;
+    background: #ececec;
+    width: -webkit-fill-available;
+    margin:10px
+    
+}
+
+.login-row input:disabled{
+    background-color: rgb(255, 255, 255) !important;
+}
+
+.login-row input:active, .login-row input:focus {
+    outline: none;
+    box-shadow: 1px 2px 8px rgb(173, 173, 173);
+
+}
+
+#add-game-form button {
+    height: 30px;
+    border-radius: var(--border-radius);
+    border: unset;
+    transition: box-shadow cubic-bezier(1, 0, 0, 1) 200ms;
+    width: 150px;
+}
+
+#add-game-form button:hover{
+    box-shadow: 1px 2px 10px grey;
+    transition: box-shadow cubic-bezier(1, 0, 0, 1) 200ms ;
 }
