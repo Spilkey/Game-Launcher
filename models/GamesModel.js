@@ -1,21 +1,39 @@
-import { DB as db } from './DB';
+import DB from './DB';
 
 class GamesModel {
     constructor() {
-        this.db = db.instance.db();
+        this.db = DB.instance.db();
     }
 
     getAllGames() {
-        let sql = `
-        SELECT * 
-        FROM games 
-        ORDER BY name`;
+        return new Promise((reslove, reject) => {
+            let sql = `
+            SELECT * 
+            FROM games 
+            ORDER BY name`;
+    
+            this.db.all(sql, [], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                reslove(rows);
+            });
+        });
+    }
 
-        db.all(sql, [], (err, rows) => {
-            if (err) {
-                throw err;
-            }
-            return rows;
+    getAllGameNames() {
+        return new Promise((reslove, reject) => {
+            let sql = `
+            SELECT name 
+            FROM games 
+            ORDER BY name`;
+    
+            this.db.all(sql, [], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                reslove(rows);
+            });
         });
     }
 
@@ -26,7 +44,7 @@ class GamesModel {
         WHERE id = ?
         ORDER BY name`;
 
-        db.get(sql, [id], (err, row) => {
+        this.db.get(sql, [id], (err, row) => {
             // process the row here
             if (err) {
                 throw err;
@@ -37,12 +55,11 @@ class GamesModel {
 
     insertGame(game) {
         // insert one row into the langs table
-        let values = game.toListString();
+        let values = game.toList();
         let sql = `
         INSERT INTO games(name, path, icon) 
-        VALUES(?)`;
-
-        db.run(sql, [values], function (err) {
+        VALUES(?, ?, ?)`;
+        this.db.run(sql, values, function (err) {
             if (err) {
                 return console.log(err.message);
             }
@@ -64,7 +81,7 @@ class GamesModel {
             id = (?)
         LIMIT 1`;
 
-        db.run(sql, [values.name, values.path, values.icon, values.id], function (err) {
+        this.db.run(sql, [values.name, values.path, values.icon, values.id], function (err) {
             if (err) {
                 return console.log(err.message);
             }
@@ -79,7 +96,7 @@ class GamesModel {
         DELETE FROM games
         WHERE id = (?)`;
 
-        db.run(sql, [id], function (err) {
+        this.db.run(sql, [id], function (err) {
             if (err) {
                 return console.log(err.message);
             }
