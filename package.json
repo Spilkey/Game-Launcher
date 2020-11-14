@@ -17,8 +17,9 @@
   },
   "dependencies": {
     "get-file-properties": "^1.0.1",
+    "icon-extractor": "^1.0.3",
     "shortcut-url": "^3.0.0",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.0",
+    "steam": "^1.4.1"
   }
-
 }
