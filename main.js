@@ -1,7 +1,7 @@
 require('babel-register')({
 	presets: ['env']
-  });
-  
+});
+
 import { app, BrowserWindow } from 'electron';
 import { ipcMain } from 'electron';
 import { shell } from 'electron';
@@ -11,7 +11,7 @@ import fs from 'fs';
 import ini from 'ini';
 
 import PathsModel from './models/PathsModel';
-import  GamesModel  from './models/GamesModel';
+import GamesModel from './models/GamesModel';
 
 import Game from './models/Game';
 
@@ -19,6 +19,8 @@ import { settingsPath, desktopPath } from './middleware/paths';
 
 import { resolve } from 'path';
 import { rejects } from 'assert';
+
+import { exec } from "child_process"
 
 import { getFileProperties, WmicDataObject } from 'get-file-properties';
 import iconExtractor from 'icon-extractor'
@@ -53,8 +55,6 @@ app.on('activate', () => {
 	}
 });
 
-
-
 ipcMain.handle('game-icon-select', (event, args) => {
 	return new Promise((resolve, reject) => {
 		dialog.showOpenDialog({
@@ -63,24 +63,20 @@ ipcMain.handle('game-icon-select', (event, args) => {
 				{ name: 'Custom File Type', extensions: ['png, ico, jpg, jpeg'] },
 			]
 		}).then((fileObject) => {
-			if(fileObject.filePaths.length > 0){
+			if (fileObject.filePaths.length > 0) {
 				resolve(fileObject.filePaths[0]);
-			}	
+			}
 		});
 	});
 });
 
 ipcMain.handle('game-file-select', (event, args) => {
-
 	return new Promise((resolve, reject) => {
 		dialog.showOpenDialog({
-			properties: ['openFile'],
-			extensions: [
-				{ name: 'Custom File Type', extensions: ['exe'] },
-			]
+			properties: ['openFile']
 		}).then((data) => {
-			if(data.filePaths.length > 0){
-				let file =  data.filePaths[0];
+			if (data.filePaths.length > 0) {
+				let file = data.filePaths[0];
 				const fileMetaData = getFileProperties(file);
 				fileMetaData.then((metaData) => {
 					iconExtractor.emitter.on('icon', (data) => {
@@ -97,21 +93,68 @@ ipcMain.handle('game-file-select', (event, args) => {
 						}
 						resolve(returnData);
 					});
-					iconExtractor.getIcon('game-image',file);
+					iconExtractor.getIcon('game-image', file);
 				});
 			}
 		});
 	});
-	
 });
 
 ipcMain.handle('add-game', (event, args) => {
 
+	let gameModel = new GamesModel();
+	return new Promise((resolve, reject) => {
+		gameModel.getAllGameNames().then((data) => {
+			let dataList = data.map(element => element.name);
+			let game = new Game(args.gameName, args.gamePath, args.iconPath);
+			try {
+				if (dataList.indexOf(args.gameName) == -1) {
+					gameModel.insertGame(game).then((data) => {
+						resolve({ 'status': 200 })
+					});
+				} else {
+					resolve({
+						'response': `Game with the name ${args.gameName} already taken`,
+						'status': 500
+					})
+				}
+			} catch (e) {
+				reject(e);
+			}
+		});
+	});
+});
+
+ipcMain.handle('play-game', (event, args) => {
+
+	let path = `start ${args}`;
+	let fixedPath;
+	if(!path.includes('.exe')){
+		fixedPath = path;
+	}else{
+		let pathParts = path.split('\\');
+		let driveLetter = pathParts.shift();
+		let fixedPathParts = pathParts.map((elm) => `"${elm}"`);
+		fixedPath = driveLetter +'\\'+ fixedPathParts.join('\\');
+	}
+	console.log(fixedPath);
+
+	exec(fixedPath, (error, stdout, stderr) => {
+		if (error) {
+			console.log(`error: ${error.message}`);
+			return;
+		}
+		if (stderr) {
+			console.log(`stderr: ${stderr}`);
+			return;
+		}
+		console.log(`stdout: ${stdout}`);
+	});
 });
 
 ipcMain.handle('games-page', (event, args) => {
 	return new Promise((resolve, reject) => {
-		try{
+		try {
 			let gameModel = new GamesModel();
 			fs.promises.readdir(desktopPath).then((files, err) => {
 				if (err) {
@@ -127,8 +170,8 @@ ipcMain.handle('games-page', (event, args) => {
 									let url = fileIni['InternetShortcut']['URL'];
 									let name = metaData.FileName;
 									let icon = fileIni['InternetShortcut']['IconFile'];
-										
-									if(dataList.indexOf(name) == -1) {
+
+									if (dataList.indexOf(name) == -1) {
 										let game = new Game(name, url, icon);
 										gameModel.insertGame(game);
 									}
@@ -139,16 +182,18 @@ ipcMain.handle('games-page', (event, args) => {
 				}
 			});
 			gameModel.getAllGames().then((data, err) => {
-				if(err){
+				if (err) {
 					reject(err);
 				}
 				resolve(data);
 			});
-		}catch(e){
+		} catch (e) {
 			reject(e);
 		}
 	});
 });
 
+ipcMain.handle('delete-game', (event, args) => {
 
+});
 

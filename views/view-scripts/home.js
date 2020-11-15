@@ -28,20 +28,8 @@ docReady(() => {
 });
 
 document.addEventListener('games-page', function (e) { 
-    ipcRenderer.invoke('games-page').then((data) => {
-        console.log(data);
-        let myGames = document.getElementById('myGames');
-        data.forEach(element => {
-            let gameElm = document.createElement('DIV');
-            gameElm.classList.add('game-row');
-            gameElm.innerHTML += `
-            <div class='game-icon'><img src='${element.icon}'/></div>
-            <div class='game-name'>${element.name}</div>
-            <button class='play-button'><a href='${element.path}'>Play</a></button>`
+    let myGames = document.getElementById('myGames');
 
-            myGames.appendChild(gameElm);
-        });
-    });
     let addGame = document.getElementById('add-game');
     let addGameModal = document.getElementById("add-game-modal");
     let addGameForm = document.getElementById('add-game-form');
@@ -55,12 +43,44 @@ document.addEventListener('games-page', function (e) {
     let gameIconButton = document.getElementById('image-select');
     let gameIconDisplay = document.getElementById('game-image');
 
+    let getErrorRow = function(node){
+        // input:after element then error-row element
+        return node.nextSibling.nextSibling;
+    }
+
+    ipcRenderer.invoke('games-page').then((data) => {
+        data.forEach(element => {
+            let gameElm = document.createElement('DIV');
+            gameElm.classList.add('game-row');
+            gameElm.innerHTML += `
+            <div class='game-icon' href='${element.path}'><img href='${element.path}' src='${element.icon}'/></div>
+            <div class='game-name'>${element.name}</div>
+            <button class='play-button' href='${element.path}'>Play</button>`
+
+            myGames.appendChild(gameElm);
+        });
+        document.querySelectorAll('.game-icon, .play-button').forEach((element) => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                let path = event.target.attributes.href.value;
+                ipcRenderer.invoke('play-game', path);
+            });
+        });
+    });
+
+
     filePathButton.addEventListener('click', () => {
         ipcRenderer.invoke('game-file-select').then((data) => {
             fileInput.value = data.gamePath;
             gameIconInput.value = data.iconPath;
             gameIconDisplay.src = data.iconPath;
             gameName.value = data.gameName;
+
+            getErrorRow(gameIconInput).textContent = '';
+            
+            getErrorRow(fileInput).textContent = '';
+            gameName.style.background = 'initial';
         });
     });
 
@@ -68,7 +88,13 @@ document.addEventListener('games-page', function (e) {
         ipcRenderer.invoke('game-icon-select').then((data) => {
             gameIconDisplay.src = data;
             gameIconInput.value = data;
+            getErrorRow(gameIconInput).textContent = '';
         });
+    });
+
+    gameName.addEventListener('keydown', (event) => {
+        gameName.style.background = 'initial';
+        getErrorRow(gameName).textContent = '';
     });
 
     var span = document.getElementsByClassName("close")[0];
@@ -80,21 +106,50 @@ document.addEventListener('games-page', function (e) {
        
     addGame.addEventListener('click', event => { 
         addGameModal.style.display = 'block';
-
-        
     });
 
+
     addGameForm.addEventListener('submit', (event) => {
+
         event.preventDefault();
         event.stopPropagation();
 
-        let filePath = addGameForm.elements.namedItem('file-path').value;
-        let imagePath = addGameForm.elements.namedItem('image-path').value;
+        let iconPath = gameIconInput.value;
+        let name = gameName.value;
+        let gamePath = fileInput.value;
 
-        
-        ipcRenderer.send('add-game', ).then((data) => {
-            console.log(data);
-            steamLoginModal.style.display = "none";
-        });
+        if(!iconPath){
+            getErrorRow(gameIconInput).textContent = 'Please select an icon';
+        }
+        if(!name){
+            getErrorRow(gameName).textContent = "Please provide a name";
+            gameName.style.background = 'rgb(224 142 150)';
+        }
+        if(!gamePath){
+            getErrorRow(fileInput).textContent = 'Please select an exe file path';
+        }
+        if(iconPath && name && gamePath){
+            ipcRenderer.invoke('add-game', {'gameName': name, 'iconPath': iconPath, 'gamePath': gamePath}).then((data) => {
+                let gameElm = document.createElement('DIV');
+                gameElm.classList.add('game-row');
+                gameElm.innerHTML += `
+                <div class='game-icon' href='${gamePath}'><img class='game-icon-img' href='${gamePath}' src='${iconPath}'/></div>
+                <div class='game-name'>${name}</div>
+                <button class='play-button' href='${gamePath}'>Play</button>`
+                myGames.appendChild(gameElm);
+
+                gameElm.addEventListener('click', (event) => {
+                    targetClass = event.target.className
+                    if(targetClass == 'play-button' ||  targetClass == 'game-icon' || targetClass == 'game-icon-img'){
+                        event.preventDefault();
+                        event.stopPropagation();
+                        let path = event.target.attributes.href.value;
+                        ipcRenderer.invoke('play-game', path);
+                    }
+                });
+                addGameModal.style.display = "none";
+            });
+        }
     });
 }, false);
+

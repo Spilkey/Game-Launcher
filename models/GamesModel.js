@@ -59,13 +59,15 @@ class GamesModel {
         let sql = `
         INSERT INTO games(name, path, icon) 
         VALUES(?, ?, ?)`;
-        this.db.run(sql, values, function (err) {
-            if (err) {
-                return console.log(err.message);
-            }
-            // get the last insert id
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
-            return this.lastID
+        return new Promise((resolve, reject) => {
+            this.db.run(sql, values, function (err) {
+                if (err) {
+                    reject(err.message);
+                }
+                // get the last insert id
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                resolve(this.lastID);
+            });
         });
     }
 
