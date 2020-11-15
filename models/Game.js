@@ -1,7 +1,7 @@
 
 class Game {
     constructor(name, path, icon, id = null) {
-        this.id = id;
+        this._id = id;
         this._name = name;
         this._path = path;
         this._icon = icon;

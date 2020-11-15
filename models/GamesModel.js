@@ -43,14 +43,16 @@ class GamesModel {
         FROM games 
         WHERE id = ?
         ORDER BY name`;
-
-        this.db.get(sql, [id], (err, row) => {
-            // process the row here
-            if (err) {
-                throw err;
-            }
-            return rows;
+        return new Promise((resolve, reject) => {
+            this.db.get(sql, [id], (err, row) => {
+                // process the row here
+                if (err) {
+                    reject(err);
+                }
+                resolve(row);
+            });
         });
+
     }
 
     insertGame(game) {
@@ -72,40 +74,41 @@ class GamesModel {
     }
 
     updateGame(game) {
-
         let values = game.toJson();
         let sql = `
         UPDATE games
-        SET name = (?)
-            path = (?)
-            icon = (?)
+        SET name = ?,
+            path = ?,
+            icon = ?
         WHERE
-            id = (?)
-        LIMIT 1`;
-
-        this.db.run(sql, [values.name, values.path, values.icon, values.id], function (err) {
-            if (err) {
-                return console.log(err.message);
-            }
-            // get the last insert id
-            console.log(`A row has been updated with rowid ${this.lastID}`);
-            return this.lastID
+            id = ?`;
+        return new Promise((resolve, reject) => {
+            this.db.run(sql, [values.name, values.path, values.icon, values.id], function (err) {
+                if (err) {
+                    return console.log(err.message);
+                }
+                // get the last insert id
+                console.log(`A row has been updated with rowid ${values.id}`);
+                resolve(values.id);
+            });
         });
     }
 
     deleteGame(id) {
         let sql = `
         DELETE FROM games
-        WHERE id = (?)`;
-
-        this.db.run(sql, [id], function (err) {
-            if (err) {
-                return console.log(err.message);
-            }
-            // get the last insert id
-            console.log(`A row has been deleted with rowid ${this.lastID}`);
-            return this.lastID
+        WHERE id = ?`;
+        return new Promise((resolve, reject) => {
+            this.db.run(sql, [id], function (err, data) {
+                if (err) {
+                    return console.log(err.message);
+                }
+                // get the last insert id
+                console.log(`A row has been deleted with rowid ${id}`);
+                resolve(id);
+            });
         });
+
     }
 }
 
