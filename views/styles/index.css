@@ -118,7 +118,14 @@
 
 .game-row {
     display: grid;
-    grid-template-columns: 100px 1fr 100px;
+    grid-template-columns: 100px 1fr 50px 50px 100px;
+    border-bottom: 1px solid black;
+}
+
+.game-row > * {
+    align-self: center;
+    font-size: 1.3rem;
+    font-weight: 600;
 }
 
 .game-row .game-icon{
@@ -150,14 +157,29 @@
 .game-row .game-name{
     grid-column: 2;
 }
+.game-row i {
+    grid-column: auto;
+    justify-self: center;
+    transition: font-size 200ms, font-weight 200ms, text-shadow 200ms;
+    font-size: 1.5rem;
+}
+
+.game-row i:hover {
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-shadow: 1px 2px 6px grey;
+    cursor: pointer;
+    transition: font-size 200ms, font-weight 200ms, text-shadow 200ms;
+}
 
 .game-row .play-button{
-    grid-column: 3;
+    grid-column: 5;
     border-radius: 10px;
     border: unset;
     margin: 5px;
     background: linear-gradient(217deg, #a5cef3, rgb(148, 148, 148) 70.71%);
     box-shadow: 1px 2px 7px #ccc;
+    align-self: stretch;
     
 }
 .game-row .play-button a {
