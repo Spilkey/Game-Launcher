@@ -26,20 +26,23 @@
                 <div>
                     <button type="button" id="file-select" >Choose Game File</button>
                     <input id="file-path" name="file-path" type='text' disabled/>
+                    <div class='error-row'></div>
                 </div>
             </div> 
             <div class='login-row'>
                 <label for="image-path">Icon Destination</label>
                 <div>
                     <button type="button" id="image-select" >Choose Image</button>
-                    <img id='game-image'/ width='50', height="50">
+                    <img id='game-image' width='50', height="50">
                     <input id="image-path" name="image-path" type='text' disabled/>
+                    <div class='error-row'></div>
                 </div>
                 
             </div> 
             <div class='login-row'>
                 <label for="game-name">Game Name</label>
                 <input id='game-name' name="game-name" >
+                <div class='error-row'></div>
             </div>   
             <button id='submit-game' type='submit'>Add Game</button>
       </form>
