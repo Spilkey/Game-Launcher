@@ -28,6 +28,8 @@ import iconExtractor from 'icon-extractor'
 if (!fs.existsSync(settingsPath)) fs.mkdir(settingsPath, () => { });
 if (!fs.existsSync(settingsPath + '\\images')) fs.mkdir(settingsPath + '\\images', () => { });
 
+let gameModel = new GamesModel();
+
 function createWindow() {
 	const win = new BrowserWindow({
 		width: 1920,
@@ -70,6 +72,19 @@ ipcMain.handle('game-icon-select', (event, args) => {
 	});
 });
 
+// Context should have filename
+iconExtractor.emitter.on('icon', (data) => {
+	let icon = data.Base64ImageData;
+	let context = data.Context;
+	let iconPath = `${settingsPath}\\images\\${context}.png`;
+
+	fs.writeFile(iconPath, icon, 'base64', (err) => {
+		if(err){
+			console.log(err);
+		}
+	});
+});
+
 ipcMain.handle('game-file-select', (event, args) => {
 	return new Promise((resolve, reject) => {
 		dialog.showOpenDialog({
@@ -79,21 +94,15 @@ ipcMain.handle('game-file-select', (event, args) => {
 				let file = data.filePaths[0];
 				const fileMetaData = getFileProperties(file);
 				fileMetaData.then((metaData) => {
-					iconExtractor.emitter.on('icon', (data) => {
-						let icon = data.Base64ImageData;
-						let fileName = metaData.FileName;
-						let iconPath = `${settingsPath}\\images\\${fileName}.png`
-						fs.writeFile(iconPath, icon, 'base64', (err) => {
-							console.log(err);
-						});
-						let returnData = {
-							'gamePath': file,
-							'iconPath': iconPath,
-							'gameName': fileName
-						}
-						resolve(returnData);
-					});
-					iconExtractor.getIcon('game-image', file);
+					let fileName = metaData.FileName;
+					iconExtractor.getIcon(fileName, file);
+					let iconPath = `${settingsPath}\\images\\${fileName}.png`;
+					let returnData = {
+						'gamePath': file,
+						'iconPath': iconPath,
+						'gameName': fileName
+					}
+					resolve(returnData);
 				});
 			}
 		});
@@ -102,7 +111,6 @@ ipcMain.handle('game-file-select', (event, args) => {
 
 ipcMain.handle('add-game', (event, args) => {
 
-	let gameModel = new GamesModel();
 	return new Promise((resolve, reject) => {
 		gameModel.getAllGameNames().then((data) => {
 			let dataList = data.map(element => element.name);
@@ -110,7 +118,7 @@ ipcMain.handle('add-game', (event, args) => {
 			try {
 				if (dataList.indexOf(args.gameName) == -1) {
 					gameModel.insertGame(game).then((data) => {
-						resolve({ 'status': 200 })
+						resolve({ 'status': 200, id: data })
 					});
 				} else {
 					resolve({
@@ -137,8 +145,6 @@ ipcMain.handle('play-game', (event, args) => {
 		let fixedPathParts = pathParts.map((elm) => `"${elm}"`);
 		fixedPath = driveLetter +'\\'+ fixedPathParts.join('\\');
 	}
-	console.log(fixedPath);
-
 	exec(fixedPath, (error, stdout, stderr) => {
 		if (error) {
 			console.log(`error: ${error.message}`);
@@ -155,7 +161,7 @@ ipcMain.handle('play-game', (event, args) => {
 ipcMain.handle('games-page', (event, args) => {
 	return new Promise((resolve, reject) => {
 		try {
-			let gameModel = new GamesModel();
+			
 			fs.promises.readdir(desktopPath).then((files, err) => {
 				if (err) {
 					console.error("Could not list the directory.", err);
@@ -194,6 +200,31 @@ ipcMain.handle('games-page', (event, args) => {
 });
 
 ipcMain.handle('delete-game', (event, args) => {
+	return new Promise((resolve, reject) => {
+		gameModel.deleteGame(args).then((data) => {
+			resolve(data);
+		});
+	});
+});
+
+ipcMain.handle('update-game', (event, args) => {
+	return new Promise((resolve, reject) => {
+		let game = new Game(args.gameName, args.gamePath, args.iconPath, args.id);
+		gameModel.updateGame(game).then((data) => {
+			gameModel.getGame(data).then((gameData) => {
+				resolve(gameData);
+			});
+		});
+	});
+});
+
+ipcMain.handle('get-game', (event, args) => {
+	return new Promise((resolve, reject) => {
+		let id = args;
+		gameModel.getGame(id).then(data => {
+			resolve(data);
+		});
+	});
 
 });
 
