@@ -1,7 +1,3 @@
-require('babel-register')({
-	presets: ['env']
-});
-
 import { app, BrowserWindow } from 'electron';
 import { ipcMain } from 'electron';
 import { shell } from 'electron';
